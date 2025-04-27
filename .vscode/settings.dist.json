@@ -1,0 +1,62 @@
+{
+  "files.eol": "\n",
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+  "editor.renderWhitespace": "all",
+  "workbench.iconTheme": "material-icon-theme",
+  "explorer.compactFolders": false,
+  "editor.tabSize": 2,
+  "editor.rulers": [
+    80,
+    120
+  ],
+  "[javascript]": {
+    "editor.tabSize": 2
+  },
+  "[json]": {
+    "editor.tabSize": 2
+  },
+  "[html]": {
+    "editor.tabSize": 4
+  },
+  "[css]": {
+    "editor.tabSize": 4
+  },
+  "[php]": {
+    "editor.tabSize": 4
+  },
+  "workbench.colorCustomizations": {
+    "tab.activeBackground": "#306998",
+    "tab.inactiveBackground": "#1e4b73",
+    "tab.activeForeground": "#ffffff",
+    "tab.inactiveForeground": "#b3d4fc",
+    "tab.hoverBackground": "#4584b6",
+    "tab.border": "#1e4b73",
+    "editor.background": "#0a2a3e",
+    "editor.foreground": "#ffffff",
+    "editorLineNumber.foreground": "#5c7080",
+    "terminal.background": "#0a2a3e",
+    "terminal.foreground": "#cbd8e1",
+    "activityBar.background": "#0d2926",
+    "sideBar.background": "#163835",
+    "statusBar.background": "#123632",
+    "statusBar.foreground": "#ffffff",
+    "titleBar.activeBackground": "#0d2926",
+    "titleBar.activeForeground": "#ffffff",
+    "button.background": "#306998",
+    "button.hoverBackground": "#4584b6",
+    "dropdown.background": "#1e4b73",
+    "input.background": "#123d3a",
+    "list.hoverBackground": "#184d47",
+    "list.activeSelectionBackground": "#306998",
+    "list.inactiveSelectionBackground": "#1e4b73"
+  },
+  "explorer.autoReveal": true,
+  "workbench.startupEditor": "readme",
+  "terminal.integrated.defaultLocation": "panel",
+  "terminal.integrated.defaultProfile.linux": "bash",
+  "terminal.integrated.splitCwd": "workspaceRoot",
+  "terminal.integrated.showOnStartup": true,
+  "editor.fontFamily": "'JetBrains Mono', Consolas, 'Courier New', monospace",
+  "editor.fontLigatures": true
+}
