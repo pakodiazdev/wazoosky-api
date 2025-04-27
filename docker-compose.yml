@@ -1,0 +1,24 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: ./docker/app/Dockerfile
+      args:
+        CONTAINER_USERNAME: ${CONTAINER_USERNAME}
+        LOCAL_UID: ${LOCAL_UID}
+        LOCAL_GID: ${LOCAL_GID}
+    container_name: ${APP_PREFIX}-api
+    hostname: api
+    working_dir: /app/code
+    volumes:
+      - .:/app
+      - web_user_home:/home/${CONTAINER_USERNAME}
+      - web_python_packages:/usr/local/lib/python3.11/site-packages/
+      - ./docker/app/init-scripts:/init-scripts
+    ports:
+      - ${APP_PORT}:8000
+    command: sudo bash /init-scripts/init.sh
+
+volumes:
+  web_user_home:
+  web_python_packages:
