@@ -2,3 +2,4 @@
 /.vscode/settings.json
 *.pyc
 /diff.txt
+*.sqlite3
