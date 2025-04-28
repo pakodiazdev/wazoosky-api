@@ -1,18 +1,16 @@
-from django.shortcuts import render
-from django.http import JsonResponse
-from core.serializers.health_check_serializer import HealthCheckSerializer
-from drf_spectacular.utils import extend_schema
+from rest_framework.response import Response
 from rest_framework.decorators import api_view
-
+from drf_spectacular.utils import extend_schema
+from core.serializers.health_check_serializer import HealthCheckSerializer
 
 @extend_schema(
     summary="Health Check",
     description="Returns a simple status check to verify if the API is running.",
-    responses=HealthCheckSerializer
+    responses=HealthCheckSerializer,
 )
 @api_view(['GET'])
 def health_check(request):
-    return JsonResponse({
+    return Response({
         "status": "ok",
-        "message": "Where’s your paperwork, Wazoosky? 🧾 (coming soon...)"
+        "message": "API running correctly."
     })
