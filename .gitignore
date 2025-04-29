@@ -3,3 +3,6 @@
 *.pyc
 /diff.txt
 *.sqlite3
+/code/htmlcov
+/code/.coverage
+/code/coverage.xml
