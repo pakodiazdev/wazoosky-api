@@ -20,11 +20,13 @@ ENV USERNAME=${CONTAINER_USERNAME} \
 
 # Install basic tools
 RUN apt-get update && apt-get install -y \
-    jq  \
     git \
+    jq  \
+    locales \
+    make \
     sudo \
     vim \
-    locales && \
+    && \
     echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
     locale-gen en_US.UTF-8 && \
     update-locale LANG=en_US.UTF-8 && \
