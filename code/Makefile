@@ -6,6 +6,7 @@ GENERATE_HTML ?= true
 format:
 	black .
 	isort .
+	python manage.py test
 
 lint:
 	flake8 .

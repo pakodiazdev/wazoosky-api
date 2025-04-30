@@ -15,10 +15,33 @@ services:
       - web_user_home:/home/${CONTAINER_USERNAME}
       - web_python_packages:/usr/local/lib/python3.11/site-packages/
       - ./docker/app/init-scripts:/init-scripts
+    environment:
+      POSTGRES_USER: ${APP_PREFIX}_user
+      POSTGRES_PASSWORD: ${APP_PREFIX}_pass
+      POSTGRES_DB: ${APP_PREFIX}_db
     ports:
       - ${APP_PORT}:8000
-    command: sudo bash /init-scripts/init.sh
+    command: bash /init-scripts/init.sh
 
+  db:
+    image: postgres:15
+    container_name: ${APP_PREFIX}-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: ${APP_PREFIX}_db
+      POSTGRES_USER: ${APP_PREFIX}_user
+      POSTGRES_PASSWORD: ${APP_PREFIX}_pass
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@${APP_PREFIX}.dev
+      PGADMIN_DEFAULT_PASSWORD: admin123
+    ports:
+      - "5050:80"
 volumes:
   web_user_home:
   web_python_packages:
+  postgres_data:

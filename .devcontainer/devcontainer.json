@@ -2,7 +2,7 @@
     "name": "wazoosky-api",
     "dockerComposeFile": "../docker-compose.yml",
     "service": "web",
-    "workspaceFolder": "/app/code",
+    "workspaceFolder": "/app",
     "shutdownAction": "stopCompose",
     "remoteUser": "wazoosky",
     "customizations": {

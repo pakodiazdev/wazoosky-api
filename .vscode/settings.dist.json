@@ -58,5 +58,6 @@
   "terminal.integrated.splitCwd": "workspaceRoot",
   "terminal.integrated.showOnStartup": true,
   "editor.fontFamily": "'JetBrains Mono', Consolas, 'Courier New', monospace",
-  "editor.fontLigatures": true
+  "editor.fontLigatures": true,
+  "terminal.integrated.cwd": "${workspaceFolder}/code"
 }
