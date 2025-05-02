@@ -19,8 +19,8 @@ from django.contrib import admin
 from django.shortcuts import redirect
 from django.urls import include, path
 from drf_spectacular.views import SpectacularAPIView
-from core.views import CustomSwaggerView
 
+from core.views import CustomSwaggerView
 
 urlpatterns = [
     path("", lambda request: redirect("/api/docs", permanent=False)),
@@ -29,11 +29,10 @@ urlpatterns = [
     path("api/", include("auth.urls")),
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
     path(
-    "api/docs",
-    CustomSwaggerView.as_view(
-        url_name="schema",
-        template_name="swagger/custom_ui.html"
+        "api/docs",
+        CustomSwaggerView.as_view(
+            url_name="schema", template_name="swagger/custom_ui.html"
+        ),
+        name="swagger-ui",
     ),
-    name="swagger-ui"
-),
 ]

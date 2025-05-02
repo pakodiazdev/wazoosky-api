@@ -1,7 +1,8 @@
 # auth/serializers/example.py
 
+from drf_spectacular.utils import OpenApiExample, extend_schema_serializer
 from rest_framework import serializers
-from drf_spectacular.utils import extend_schema_serializer, OpenApiExample
+
 
 @extend_schema_serializer(
     examples=[
@@ -10,8 +11,8 @@ from drf_spectacular.utils import extend_schema_serializer, OpenApiExample
             value={
                 "username": "john_doe87",
                 "email": "john.doe87@example.com",
-                "password": "Test1234!"
-            }
+                "password": "Test1234!",
+            },
         )
     ]
 )

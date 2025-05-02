@@ -7,7 +7,7 @@
   "explorer.compactFolders": false,
   "editor.tabSize": 2,
   "editor.rulers": [
-    80,
+    88,
     120
   ],
   "[javascript]": {

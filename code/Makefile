@@ -6,6 +6,7 @@ GENERATE_HTML ?= true
 format:
 	black .
 	isort .
+	autopep8 --in-place --recursive --aggressive --aggressive .
 	python manage.py test
 
 lint:
