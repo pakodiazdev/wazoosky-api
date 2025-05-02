@@ -59,5 +59,11 @@
   "terminal.integrated.showOnStartup": true,
   "editor.fontFamily": "'JetBrains Mono', Consolas, 'Courier New', monospace",
   "editor.fontLigatures": true,
-  "terminal.integrated.cwd": "${workspaceFolder}/code"
+  "terminal.integrated.cwd": "${workspaceFolder}/code",
+  "files.exclude": {
+      "**/__pycache__": true
+  },
+  "search.exclude": {
+      "**/__pycache__": true
+  }
 }

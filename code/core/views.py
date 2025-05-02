@@ -3,6 +3,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from core.serializers.health_check_serializer import HealthCheckSerializer
+from drf_spectacular.views import SpectacularSwaggerView
 
 
 @extend_schema(
@@ -18,3 +19,6 @@ def health_check(request):
             "message": "Where’s your paperwork, Wazoosky? 🧾 (coming soon...)",
         }
     )
+
+class CustomSwaggerView(SpectacularSwaggerView):
+    template_name = "swagger/custom_ui.html"

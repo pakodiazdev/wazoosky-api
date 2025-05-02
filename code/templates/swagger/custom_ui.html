@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Swagger UI</title>
+    <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist/swagger-ui.css" />
+    <style>
+      html, body {
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="swagger-ui"></div>
+
+    <!-- Swagger UI core scripts from CDN -->
+    <script src="https://unpkg.com/swagger-ui-dist/swagger-ui-bundle.js"></script>
+    <script src="https://unpkg.com/swagger-ui-dist/swagger-ui-standalone-preset.js"></script>
+
+    <!-- Your custom script -->
+    <script src="/static/swagger-ui-faker.js"></script>
+
+    <!-- Swagger initialization -->
+    <script>
+      window.onload = () => {
+        SwaggerUIBundle({
+          url: "/api/schema/", // ← este endpoint sirve tu JSON OpenAPI
+          dom_id: "#swagger-ui",
+          presets: [
+            SwaggerUIBundle.presets.apis,
+            SwaggerUIStandalonePreset
+          ],
+          layout: "StandaloneLayout",
+          deepLinking: true,
+        });
+      };
+    </script>
+  </body>
+</html>
