@@ -40,5 +40,9 @@ else
     echo "📦 Database already has $EXISTING_TABLES tables. Skipping migration and seed."
 fi
 
+# Git Configuration
+
+git config --global core.autocrlf input
+
 python manage.py runserver 0.0.0.0:8000 & tail -f /dev/null
 
