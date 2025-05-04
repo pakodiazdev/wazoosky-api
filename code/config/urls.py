@@ -35,4 +35,7 @@ urlpatterns = [
         ),
         name="swagger-ui",
     ),
+    path("organizations/", include("organizations.urls"))
+    #path('organizations/<int:org_id>/invite/', InviteMemberView.as_view(), name='invite-member'),
+
 ]

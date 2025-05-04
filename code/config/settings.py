@@ -23,9 +23,10 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "core.apps.CoreConfig",
     "drf_spectacular",
     "drf_spectacular_sidecar",
+    "core.apps.CoreConfig",
+    "organizations",
     "users.apps.UsersConfig",
     "rest_framework_simplejwt.token_blacklist",
 ]
