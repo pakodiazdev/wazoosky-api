@@ -4,18 +4,57 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-# Load environment variables from .env file
+# ---------------------------
+# 🔧 Directorio base del proyecto
+# ---------------------------
 BASE_DIR = Path(__file__).resolve().parent.parent
-load_dotenv(dotenv_path=BASE_DIR / ".env")
 
-# Security & Environment
+# ---------------------------
+# 🌍 Entorno actual: dev, test, prod...
+# ---------------------------
+env_name = os.getenv("DJANGO_ENV", "dev").lower()
+env_file = f".env.{env_name}"
+
+# 🔄 Cargar archivo .env.{env_name} si existe, si no usar .env
+dotenv_path = BASE_DIR / env_file
+if dotenv_path.exists():
+    load_dotenv(dotenv_path=dotenv_path)
+else:
+    load_dotenv(dotenv_path=BASE_DIR / ".env")
+
+# ---------------------------
+# 🔐 Seguridad y entorno
+# ---------------------------
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "django-insecure-placeholder")
 DEBUG = os.getenv("DEBUG", "false").lower() == "true"
 USE_CUSTOM_SWAGGER_UI = os.getenv("USE_CUSTOM_SWAGGER_UI", "true").lower() == "true"
 FAKE_REGISTER_PASSWORD = os.getenv("FAKE_REGISTER_PASSWORD", "Test1234!")
-ALLOWED_HOSTS: list[str] = []
+ALLOWED_HOSTS = (
+    os.getenv("ALLOWED_HOSTS", "").split(",") if os.getenv("ALLOWED_HOSTS") else []
+)
 
-# Application definition
+# ---------------------------
+# 🗄️ Configuración de base de datos
+# ---------------------------
+APP_PREFIX = os.getenv("APP_PREFIX", "wazoosky")
+DB_NAME = os.getenv("DB_NAME", f"{APP_PREFIX}_db")
+DB_USER = os.getenv("DB_USER", os.getenv("POSTGRES_USER", "admin"))
+DB_PASSWORD = os.getenv("DB_PASSWORD", os.getenv("POSTGRES_PASSWORD", "Wazoosky!123"))
+
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": DB_NAME,
+        "USER": DB_USER,
+        "PASSWORD": DB_PASSWORD,
+        "HOST": os.getenv("DB_HOST", "db"),
+        "PORT": os.getenv("DB_PORT", "5432"),
+    }
+}
+
+# ---------------------------
+# ⚙️ Configuración de aplicaciones
+# ---------------------------
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -24,10 +63,10 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "core.apps.CoreConfig",
-    "drf_spectacular",
-    "drf_spectacular_sidecar",
     "users.apps.UsersConfig",
     "rest_framework_simplejwt.token_blacklist",
+    "drf_spectacular",
+    "drf_spectacular_sidecar",
 ]
 
 MIDDLEWARE = [
@@ -42,6 +81,9 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "config.urls"
 
+# ---------------------------
+# 🎨 Templates
+# ---------------------------
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -60,68 +102,57 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
-# Database
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv("DB_NAME", "wazoosky_db"),
-        "USER": os.getenv("DB_USER", "wazoosky_user"),
-        "PASSWORD": os.getenv("DB_PASSWORD", "wazoosky_pass"),
-        "HOST": os.getenv("DB_HOST", "db"),
-        "PORT": os.getenv("DB_PORT", "5432"),
-    }
-}
-
-# Password validation
+# ---------------------------
+# 🔒 Validaciones de contraseña
+# ---------------------------
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": (
-            "django.contrib.auth.password_validation."
-            "UserAttributeSimilarityValidator"
-        ),
+            "django.contrib.auth.password_validation.",
+            "UserAttributeSimilarityValidator",
+        )
     },
-    {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
-    },
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
+    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
+    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
-# Internationalization
+# ---------------------------
+# 🌐 Internacionalización
+# ---------------------------
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
 
-# Static files
+# ---------------------------
+# 📁 Archivos estáticos
+# ---------------------------
 STATIC_URL = "static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
 
-# Default PK field
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
-# DRF Settings
+# ---------------------------
+# 🧩 Configuración de DRF
+# ---------------------------
 REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
-    "DEFAULT_RENDERER_CLASSES": [
-        "rest_framework.renderers.JSONRenderer",
-    ],
+    "DEFAULT_RENDERER_CLASSES": ["rest_framework.renderers.JSONRenderer"],
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
 }
 
-# Swagger UI (conditional)
+# ---------------------------
+# 📚 Swagger UI
+# ---------------------------
 SPECTACULAR_SETTINGS = {
     "SWAGGER_UI_DIST": None if USE_CUSTOM_SWAGGER_UI else "SIDECAR",
     "REDOC_DIST": None,
 }
 
-# JWT Auth
+# ---------------------------
+# 🔐 Configuración de JWT
+# ---------------------------
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
@@ -130,5 +161,12 @@ SIMPLE_JWT = {
     "AUTH_HEADER_TYPES": ("Bearer",),
 }
 
-# Custom user model
+# ---------------------------
+# 👤 Modelo de usuario personalizado
+# ---------------------------
 AUTH_USER_MODEL = "users.User"
+
+# ---------------------------
+# 🆔 Campo por defecto para primary key
+# ---------------------------
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"

@@ -1,0 +1,18 @@
+[run]
+omit =
+    */tests/*
+    */migrations/*
+    */__init__.py
+    */settings.py
+    */wsgi.py
+    */asgi.py
+    */manage.py
+    */apps.py
+
+[report]
+exclude_lines =
+    pragma: no cover
+    if __name__ == "__main__":
+
+[xml]
+output = coverage.xml

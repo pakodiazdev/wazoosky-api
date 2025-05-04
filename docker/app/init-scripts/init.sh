@@ -21,8 +21,20 @@ echo "✅ PostgreSQL is up."
 
 set -e
 
-echo "⏳ Checking if PostgreSQL schema is empty..."
+# 🧪 Verifica si la base de datos de pruebas existe, y créala si no
+echo "🔎 Checking if test database '$POSTGRES_TEST_DB' exists..."
+DB_EXISTS=$(PGPASSWORD=$POSTGRES_PASSWORD psql -U $POSTGRES_USER -h db -d $POSTGRES_DB -tAc "SELECT 1 FROM pg_database WHERE datname = '$POSTGRES_TEST_DB';")
 
+if [ "$DB_EXISTS" != "1" ]; then
+    echo "🧪 Test database not found. Creating '$POSTGRES_TEST_DB'..."
+    PGPASSWORD=$POSTGRES_PASSWORD createdb -U $POSTGRES_USER -h db $POSTGRES_TEST_DB
+    echo "✅ Test database created."
+else
+    echo "📂 Test database '$POSTGRES_TEST_DB' already exists. Skipping creation."
+fi
+
+# 🧠 Verifica si la base principal está vacía y aplica migraciones
+echo "⏳ Checking if PostgreSQL schema is empty..."
 EXISTING_TABLES=$(PGPASSWORD=$POSTGRES_PASSWORD psql -U $POSTGRES_USER -d $POSTGRES_DB -h db -tAc "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'public';" || echo "error")
 
 if ! [[ "$EXISTING_TABLES" =~ ^[0-9]+$ ]]; then
@@ -35,14 +47,13 @@ if [ "$EXISTING_TABLES" -eq "0" ]; then
     python manage.py migrate
 
     echo "🌱 Running seeders..."
-    python manage.py seed_users --total 75
+    python manage.py seed_users --total 575
 else
     echo "📦 Database already has $EXISTING_TABLES tables. Skipping migration and seed."
 fi
 
-# Git Configuration
-
+# ⚙️ Configuración Git
 git config --global core.autocrlf input
 
+# 🚀 Inicia servidor
 python manage.py runserver 0.0.0.0:8000 & tail -f /dev/null
-
