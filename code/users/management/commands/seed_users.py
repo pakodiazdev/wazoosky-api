@@ -10,17 +10,24 @@ class Command(BaseCommand):
     help = "Seed the database with test users"
 
     def add_arguments(self, parser):
-        parser.add_argument("--total", type=int, default=10)
+        parser.add_argument("--total", type=int, default=100)
 
-    def handle(self, *args, **kwargs):
-        total = kwargs["total"]
+    def handle(self, *args, **options):
+        total = options["total"]
+        fake = Faker()
+
+        users = []
         for _ in range(total):
-            email = fake.unique.email()
-            username = fake.user_name()
-            password = "secret123"
-
-            if not User.objects.filter(email=email).exists():
-                User.objects.create_user(
-                    email=email, username=username, password=password
+            users.append(
+                User(
+                    username=fake.unique.user_name(),
+                    email=fake.unique.email(),
+                    first_name=fake.first_name(),
+                    last_name=fake.last_name(),
                 )
-                self.stdout.write(self.style.SUCCESS(f"✅ Created user: {email}"))
+            )
+
+        User.objects.bulk_create(users, batch_size=500)
+        self.stdout.write(
+            self.style.SUCCESS(f"✅ {total} users created with bulk_create")
+        )

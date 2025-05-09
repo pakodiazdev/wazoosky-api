@@ -7,7 +7,6 @@ format:
 	black .
 	isort .
 	autopep8 --in-place --recursive --aggressive --aggressive .
-	python manage.py test
 
 lint:
 	flake8 .
@@ -25,11 +24,8 @@ test:
 	python manage.py test
 
 test-with-coverage:
-	coverage run --source='core,config' manage.py test
-	coverage xml -o coverage.xml
-ifeq ($(GENERATE_HTML),true)
-	coverage html -d htmlcov
-endif
+	coverage run --source=. -m pytest && \
+	coverage xml -o coverage.xml && \
 	coverage report
 
 start:

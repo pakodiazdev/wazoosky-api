@@ -1,5 +1,3 @@
-# auth/views/example.py
-
 import os
 
 from drf_spectacular.utils import extend_schema
@@ -21,7 +19,7 @@ faker = Faker()
     responses={200: RegisterExampleResponseSerializer},
 )
 @api_view(["GET"])
-def ExampleReqistreRequest(request):
+def example_reqistre_request(request):
     return Response(
         {
             "username": faker.user_name(),

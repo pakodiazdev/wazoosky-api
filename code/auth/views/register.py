@@ -8,8 +8,6 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from auth.serializers.registre import RegisterRequestSerializer
 from auth.serializers.token_response import TokenResponseSerializer
 
-# from core.events.dispatcher import dispatch  # este lo haremos en el siguiente paso
-
 User = get_user_model()
 
 

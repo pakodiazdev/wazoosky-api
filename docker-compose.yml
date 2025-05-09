@@ -16,32 +16,43 @@ services:
       - web_python_packages:/usr/local/lib/python3.11/site-packages/
       - ./docker/app/init-scripts:/init-scripts
     environment:
-      POSTGRES_USER: ${APP_PREFIX}_user
-      POSTGRES_PASSWORD: ${APP_PREFIX}_pass
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${APP_PREFIX}_db
+      POSTGRES_TEST_DB: ${APP_PREFIX}_test
     ports:
-      - ${APP_PORT}:8000
+      - ${APP_PORT_FORWARDING}:8000
     command: bash /init-scripts/init.sh
 
   db:
     image: postgres:15
     container_name: ${APP_PREFIX}-postgres
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT_FORWARDING}:5432"
     environment:
       POSTGRES_DB: ${APP_PREFIX}_db
-      POSTGRES_USER: ${APP_PREFIX}_user
-      POSTGRES_PASSWORD: ${APP_PREFIX}_pass
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
   pgadmin:
-    image: dpage/pgadmin4
+    image: dpage/pgadmin4:8.6
+    volumes:
+      - ./docker/pgadmin/init-pgadmin.sh:/docker-entrypoint.sh:ro
+      - pgadmin-data:/var/lib/pgadmin
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@${APP_PREFIX}.dev
-      PGADMIN_DEFAULT_PASSWORD: admin123
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${APP_PREFIX}_db
+      PGADMIN_SERVER_JSON_FILE: /var/lib/pgadmin/servers.json
+      PGADMIN_SERVER_NAME: ${APP_PREFIX}_db_server
+    entrypoint: sh /docker-entrypoint.sh
     ports:
-      - "5050:80"
+      - "${PGADMIN_PORT_FORWARDING}:80"
 volumes:
   web_user_home:
   web_python_packages:
   postgres_data:
+  pgadmin-data:

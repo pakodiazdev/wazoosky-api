@@ -2,18 +2,14 @@ name: Django CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master, temp2 ]
   pull_request:
-    branches: [ master ]
+    branches: [ master, temp2 ]
 
 jobs:
   lint:
     name: Code Quality (Format, Lint & Type Check)
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: code
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -25,19 +21,40 @@ jobs:
 
       - name: Install dependencies
         run: |
+          cd code
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install black isort flake8 mypy
 
       - name: Run code quality checks
-        run: make check
+        run: |
+          cd code
+          make check
 
   test:
     name: Run Tests and Coverage
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: code
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_DB: test_wazoosky_db
+          POSTGRES_USER: admin
+          POSTGRES_PASSWORD: Generic.Secret0987
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U admin"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    env:
+      DB_HOST: localhost
+      DB_PORT: 5432
+      DB_NAME: test_wazoosky_db
+      DB_USER: admin
+      DB_PASSWORD: Generic.Secret0987
 
     steps:
       - name: Checkout code
@@ -50,15 +67,59 @@ jobs:
 
       - name: Install dependencies
         run: |
+          cd code
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install coverage
 
+      - name: Wait for PostgreSQL to be ready
+        run: |
+          until pg_isready -h localhost -U admin; do
+            echo "Waiting for PostgreSQL..."
+            sleep 1
+          done
+
       - name: Run tests and generate coverage report
-        run: make test-with-coverage
+        run: |
+          cd code
+          make test-with-coverage
+          pwd
+          ls -la
+
+      - name: Check if coverage.xml exists
+        run: |
+          cd code
+          ls -lh coverage.xml
 
       - name: Upload coverage.xml as artifact
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
           path: code/coverage.xml
+
+  sonarcloud:
+    name: SonarCloud Scan
+    needs: test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download coverage artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage-artifact
+      - name: 🛠️ Patch coverage.xml source and move into code/
+        run: |
+          echo "📁 Patching and moving coverage.xml"
+          sed -i 's|<source>.*</source>|<source>./code</source>|' coverage-artifact/coverage.xml
+          mv coverage-artifact/coverage.xml coverage.xml
+
+      - name: 📊 Run SonarCloud Scan
+        uses: SonarSource/sonarqube-scan-action@v5.0.0
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
